@@ -1,0 +1,1657 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>UpFrame Creative — Website Copy Generator</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito+Sans:ital,wght@0,300;0,400;0,600;0,700;1,300&family=Nunito:wght@300;400;700;800&display=swap" rel="stylesheet">
+<style>
+:root {
+  --dusk:#455c6f;--dusk-dark:#344856;--slate:#536e84;
+  --wheat:#d6b981;--wheat-light:#e8d4a8;
+  --latte:#e6e1d6;--latte-dark:#c8c0b0;
+  --charcoal:#383837;--pebble:#e9e8e5;--white:#ffffff;
+  --success:#2d6a4f;--danger:#b91c1c;--r:2px;
+}
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth}
+body{font-family:'Nunito Sans',sans-serif;background:var(--latte);color:var(--charcoal);min-height:100vh;font-size:15px;line-height:1.6}
+
+/* NAV */
+.nav{background:var(--charcoal);padding:0 40px;display:flex;align-items:center;justify-content:space-between;height:60px;position:sticky;top:0;z-index:200}
+.nav-brand{display:flex;align-items:center;gap:10px}
+.nav-mark{width:32px;height:32px;background:var(--dusk);display:flex;align-items:center;justify-content:center}
+.nav-mark svg{width:20px;height:20px}
+.nav-wm{font-family:'Nunito',sans-serif;font-weight:800;font-size:14px;letter-spacing:.16em;text-transform:uppercase;color:#fff}
+.nav-right{display:flex;align-items:center;gap:16px}
+.nav-tool{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--wheat);font-weight:600}
+.nav-step{font-size:12px;color:rgba(255,255,255,.45);display:none}
+.nav-step span{color:var(--wheat);font-weight:700}
+
+/* PROGRESS */
+.prog-wrap{height:3px;background:rgba(255,255,255,.08);position:sticky;top:60px;z-index:199}
+.prog-fill{height:100%;background:var(--wheat);transition:width .4s ease;width:0%}
+
+/* SHELL */
+.shell{max-width:860px;margin:0 auto;padding:0 24px 120px}
+
+/* PAGE SYSTEM — only .page.active is shown */
+.page{display:none}.page.active{display:block}
+
+/* LANDING */
+.landing{padding:72px 0 48px;max-width:680px}
+.eyebrow{font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--wheat);margin-bottom:20px;display:flex;align-items:center;gap:10px}
+.eyebrow::before{content:'';width:24px;height:1px;background:var(--wheat)}
+.landing h1{font-family:'Nunito',sans-serif;font-size:clamp(36px,5.5vw,56px);font-weight:300;line-height:1.08;color:var(--dusk);text-transform:uppercase;letter-spacing:.02em;margin-bottom:24px}
+.landing h1 strong{font-weight:800;display:block}
+.landing p{font-size:16px;color:var(--slate);line-height:1.75;margin-bottom:40px;max-width:520px}
+.pills{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:32px}
+.pill{padding:5px 13px;border:1px solid var(--latte-dark);font-size:12px;font-weight:700;letter-spacing:.08em;color:var(--slate);text-transform:uppercase}
+.pill.on{background:var(--dusk);color:#fff;border-color:var(--dusk)}
+
+/* SCAN CARD */
+.scan-card{background:var(--white);border:1px solid var(--latte-dark);padding:32px;margin-bottom:20px}
+.scan-card h3{font-family:'Nunito',sans-serif;font-size:17px;font-weight:700;color:var(--dusk);text-transform:uppercase;letter-spacing:.06em;margin-bottom:6px}
+.scan-card p{font-size:14px;color:var(--slate);margin-bottom:20px;line-height:1.6}
+.url-row{display:flex;gap:10px}
+.url-row input{flex:1;padding:13px 16px;border:1px solid var(--latte-dark);background:var(--pebble);font-family:'Nunito Sans',sans-serif;font-size:15px;color:var(--charcoal);outline:none;border-radius:var(--r);transition:border-color .15s}
+.url-row input:focus{border-color:var(--dusk);background:#fff}
+.skip-link{display:inline-block;margin-top:14px;font-size:13px;color:var(--slate);cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.skip-link:hover{color:var(--dusk)}
+
+/* SCAN PROGRESS */
+.scan-prog{background:var(--charcoal);padding:24px 28px;margin-bottom:20px;display:none}
+.scan-prog.show{display:block}
+.scan-steps{display:flex;flex-direction:column;gap:10px}
+.ss{display:flex;align-items:center;gap:12px;font-size:13px;color:rgba(255,255,255,.35);transition:color .3s}
+.ss.done{color:var(--wheat)}.ss.cur{color:#fff}
+.ss-icon{width:18px;height:18px;border:1px solid currentColor;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:10px;flex-shrink:0}
+.ss.done .ss-icon{background:var(--wheat);border-color:var(--wheat);color:var(--charcoal)}
+
+/* SCAN BANNER */
+.scan-banner{display:none;background:var(--dusk);color:#fff;padding:18px 24px;margin-bottom:20px;border-radius:var(--r)}
+.scan-banner.show{display:block}
+.scan-banner-title{font-weight:700;font-size:15px;margin-bottom:4px}
+.scan-banner-sub{font-size:13px;color:rgba(255,255,255,.7);margin-bottom:10px}
+.spills{display:flex;flex-wrap:wrap;gap:6px}
+.spill{padding:3px 9px;border:1px solid rgba(255,255,255,.25);font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.6);border-radius:var(--r)}
+.spill.ok{border-color:var(--wheat);color:var(--wheat)}
+
+/* STEP HEADER */
+.step-hd{padding:48px 0 28px;border-bottom:1px solid var(--latte-dark);margin-bottom:32px}
+.step-ey{font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:var(--wheat);margin-bottom:10px}
+.step-row{display:flex;align-items:flex-start;gap:20px}
+.step-n{font-family:'Nunito',sans-serif;font-size:52px;font-weight:300;color:var(--latte-dark);line-height:1;flex-shrink:0;margin-top:-4px}
+.step-t{font-family:'Nunito',sans-serif;font-size:clamp(22px,3.5vw,34px);font-weight:700;color:var(--dusk);text-transform:uppercase;letter-spacing:.04em;line-height:1.1;margin-bottom:8px}
+.step-d{font-size:14px;color:var(--slate);line-height:1.65;max-width:480px}
+.sb-tag{display:inline-flex;background:var(--dusk);color:#fff;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:4px 10px;margin-top:10px}
+
+/* FORM */
+.fg{margin-bottom:24px}
+.fl{display:block;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--dusk);margin-bottom:5px}
+.fl .req{color:var(--danger);margin-left:3px}
+.fh{font-size:13px;color:var(--slate);font-style:italic;margin-bottom:7px;line-height:1.5}
+.fi,.ft,.fs{width:100%;padding:12px 16px;border:1px solid var(--latte-dark);background:#fff;font-family:'Nunito Sans',sans-serif;font-size:15px;color:var(--charcoal);outline:none;border-radius:var(--r);transition:border-color .15s,box-shadow .15s;-webkit-appearance:none}
+.ft{min-height:88px;resize:vertical;line-height:1.6}.ft.tall{min-height:120px}
+.fi:focus,.ft:focus,.fs:focus{border-color:var(--dusk);box-shadow:0 0 0 3px rgba(69,92,111,.1)}
+
+/* VALIDATION ERROR STATE */
+.fi.err,.ft.err{border-color:var(--danger)!important;box-shadow:0 0 0 3px rgba(185,28,28,.12)!important;background:#fff8f8!important}
+.field-err{font-size:12px;color:var(--danger);font-weight:600;margin-top:5px;display:none}
+.field-err.show{display:block}
+.step-err-banner{background:#fef2f2;border:1px solid #fca5a5;border-left:3px solid var(--danger);padding:12px 16px;border-radius:var(--r);margin-bottom:20px;font-size:13px;color:var(--danger);font-weight:600;display:none}
+.step-err-banner.show{display:block}
+
+/* FIELD STATUS (scan) */
+.fstatus{font-size:12px;margin-top:5px;display:none;align-items:center;gap:5px}
+.fstatus.found{display:flex;color:var(--success)}.fstatus.missing{display:flex;color:#92400e}
+.fstatus::before{content:'';width:6px;height:6px;border-radius:50%;background:currentColor;flex-shrink:0}
+.needs-review{border-color:#f59e0b!important;box-shadow:0 0 0 2px rgba(245,158,11,.15)!important}
+
+.g2{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:16px}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:8px}
+.chip{padding:7px 14px;border:1px solid var(--latte-dark);background:#fff;font-size:13px;font-weight:600;color:var(--slate);cursor:pointer;transition:all .12s;user-select:none;border-radius:var(--r)}
+.chip:hover{border-color:var(--slate);color:var(--dusk)}.chip.on{background:var(--dusk);color:#fff;border-color:var(--dusk)}
+
+/* RULE */
+.rule{display:flex;align-items:center;gap:14px;margin:32px 0 24px}
+.rule-lbl{font-size:11px;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--wheat);white-space:nowrap}
+.rule::before,.rule::after{content:'';flex:1;height:1px;background:var(--latte-dark)}
+
+/* BUTTONS */
+.btn{display:inline-flex;align-items:center;gap:8px;padding:13px 28px;font-family:'Nunito Sans',sans-serif;font-size:12px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;cursor:pointer;border:none;border-radius:var(--r);transition:all .15s;text-decoration:none;white-space:nowrap}
+.btn-p{background:var(--dusk);color:#fff}.btn-p:hover{background:var(--dusk-dark)}
+.btn-w{background:var(--wheat);color:var(--charcoal)}.btn-w:hover{background:#c4a76d}
+.btn-g{background:transparent;color:var(--slate);border:1px solid var(--latte-dark)}.btn-g:hover{border-color:var(--slate);color:var(--dusk)}
+.btn-o{background:transparent;color:var(--dusk);border:1px solid var(--dusk)}.btn-o:hover{background:var(--dusk);color:#fff}
+.btn-sm{padding:8px 14px;font-size:11px}.btn-lg{padding:16px 36px;font-size:13px}
+.btn-row{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin-top:32px;padding-top:24px;border-top:1px solid var(--latte-dark)}
+
+/* ═══ OUTPUT PAGE ═══ */
+.out-header{padding:40px 0 28px}
+.out-header h1{font-family:'Nunito',sans-serif;font-size:clamp(26px,4vw,42px);font-weight:300;text-transform:uppercase;letter-spacing:.04em;color:var(--dusk);margin-bottom:6px}
+.out-header h1 strong{font-weight:800}
+.out-header p{font-size:13px;color:var(--slate)}
+.out-header p span{font-weight:700;color:var(--dusk)}
+
+/* TABS */
+.tabs{display:flex;gap:2px;background:var(--latte-dark);padding:2px;margin-bottom:0;overflow-x:auto;position:sticky;top:63px;z-index:100}
+.tab-btn{flex:1;min-width:90px;padding:11px 14px;font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;text-align:center;cursor:pointer;background:transparent;color:var(--slate);border:none;transition:all .15s;white-space:nowrap}
+.tab-btn.on{background:#fff;color:var(--dusk)}
+.tab-btn:hover:not(.on){background:rgba(255,255,255,.5);color:var(--dusk)}
+
+/* TAB PANELS */
+.tab-panel{display:none;padding-top:24px}
+.tab-panel.on{display:block}
+
+/* SEO BLOCK */
+.seo-blk{background:var(--charcoal);padding:22px 26px;margin-bottom:20px;border-radius:var(--r)}
+.seo-blk-hd{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.seo-lbl{font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--wheat);display:flex;align-items:center;gap:7px}
+.seo-lbl::before{content:'';width:7px;height:7px;background:var(--wheat);display:inline-block}
+.seo-row{margin-bottom:12px}.seo-row:last-child{margin-bottom:0}
+.seo-name{font-size:11px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:rgba(255,255,255,.38);margin-bottom:3px}
+.seo-val{font-size:14px;color:var(--pebble);line-height:1.5}
+.seo-val.title{color:#8ab4f8;font-size:16px;font-weight:600}
+.cc{font-size:11px;margin-left:6px}.cc.warn{color:#f59e0b}.cc.over{color:#ef4444}.cc.ok{color:rgba(255,255,255,.3)}
+
+/* COPY BLOCKS */
+.cb{background:#fff;border:1px solid var(--latte-dark);margin-bottom:14px;border-radius:var(--r);overflow:hidden}
+.cb-head{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;background:var(--pebble);border-bottom:1px solid var(--latte-dark)}
+.cb-lbl{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--dusk);display:flex;align-items:center;gap:7px}
+.cb-dot{width:5px;height:5px;background:var(--wheat);flex-shrink:0}
+.cb-body{padding:18px 20px;font-size:15px;color:var(--charcoal);line-height:1.8;white-space:pre-wrap;font-family:'Nunito Sans',sans-serif}
+.cb-body.streaming::after{content:'▋';animation:blink .7s step-end infinite;color:var(--wheat)}
+@keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
+
+/* GEO */
+.geo-blk{background:var(--dusk);border-radius:var(--r);padding:18px 22px;margin-bottom:14px}
+.geo-lbl{font-size:11px;font-weight:700;letter-spacing:.18em;text-transform:uppercase;color:var(--wheat-light);margin-bottom:8px;display:flex;align-items:center;gap:7px}
+.geo-lbl::before{content:'◎'}
+.geo-blk p{font-size:13px;color:rgba(255,255,255,.8);line-height:1.65}
+.geo-blk strong{color:#fff}
+
+/* NOTE */
+.note-blk{background:var(--wheat-light);border:1px solid var(--wheat);border-left:3px solid var(--wheat);padding:13px 16px;margin-top:8px;border-radius:var(--r);font-size:13px;color:var(--charcoal);line-height:1.6}
+.note-blk strong{color:var(--dusk)}
+
+/* COPY BTN */
+.cp-btn{display:inline-flex;align-items:center;gap:5px;padding:5px 11px;font-size:11px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;cursor:pointer;background:transparent;border:1px solid var(--latte-dark);color:var(--slate);border-radius:var(--r);transition:all .12s}
+.cp-btn:hover{border-color:var(--dusk);color:var(--dusk)}.cp-btn.copied{background:var(--success);color:#fff;border-color:var(--success)}
+.cp-dk{border-color:rgba(255,255,255,.2);color:rgba(255,255,255,.5)}.cp-dk:hover{border-color:var(--wheat);color:var(--wheat)}
+
+/* EXPORT BAR */
+.export-bar{position:sticky;bottom:0;background:var(--charcoal);padding:13px 24px;display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin:0 -24px;z-index:100}
+.export-l{font-size:13px;color:rgba(255,255,255,.55)}.export-l span{color:var(--wheat);font-weight:700}
+.export-r{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.so-btn{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.4);cursor:pointer;background:none;border:none;transition:color .15s}
+.so-btn:hover{color:#fff}
+
+/* API ERROR */
+.api-err{background:#fef2f2;border:1px solid #fca5a5;border-left:3px solid #ef4444;padding:14px 18px;border-radius:var(--r);margin-bottom:14px;font-size:14px;color:#7f1d1d;line-height:1.6;display:none}
+
+/* STORYBRAND SCORE BADGE */
+.sb-score{display:inline-flex;align-items:center;gap:6px;padding:3px 10px;border-radius:var(--r);font-size:11px;font-weight:700;letter-spacing:.08em}
+.sb-score.great{background:#d1fae5;color:#065f46}
+.sb-score.good{background:#fef3c7;color:#92400e}
+.sb-score.weak{background:#fee2e2;color:#991b1b}
+.sb-critique{font-size:12px;color:var(--slate);margin:6px 0 0;font-style:italic;line-height:1.5;padding-left:2px}
+.sb-revised-badge{display:inline-flex;align-items:center;gap:5px;background:var(--dusk);color:#fff;font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;padding:3px 9px;border-radius:var(--r);margin-bottom:8px}
+.sb-original{background:var(--pebble);border-left:3px solid var(--latte-dark);padding:10px 14px;margin-bottom:10px;font-size:13px;color:var(--slate);line-height:1.7;white-space:pre-wrap}
+.sb-original-lbl{font-size:10px;font-weight:700;letter-spacing:.12em;text-transform:uppercase;color:var(--latte-dark);margin-bottom:4px}
+.editor-pass-bar{background:var(--charcoal);padding:10px 20px;display:flex;align-items:center;gap:10px;margin-bottom:0}
+.editor-pass-bar-txt{font-size:12px;color:rgba(255,255,255,.55)}
+.editor-pass-bar-txt strong{color:var(--wheat)}
+.page-score-summary{background:#fff;border:1px solid var(--latte-dark);padding:16px 20px;margin-bottom:14px;border-radius:var(--r);display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.pss-label{font-size:11px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--slate)}
+.pss-score{font-family:'Nunito',sans-serif;font-size:28px;font-weight:800;line-height:1}
+.pss-score.great{color:#065f46}.pss-score.good{color:#92400e}.pss-score.weak{color:#991b1b}
+.pss-bar{flex:1;height:6px;background:var(--latte-dark);border-radius:3px;min-width:80px}
+.pss-fill{height:100%;border-radius:3px;transition:width .6s ease}
+.pss-fill.great{background:#10b981}.pss-fill.good{background:#f59e0b}.pss-fill.weak{background:#ef4444}
+.pss-summary{font-size:13px;color:var(--slate);flex:2;line-height:1.5}
+.gen-ov.show{display:flex}
+.spinner{width:44px;height:44px;border:3px solid rgba(214,185,129,.2);border-top-color:var(--wheat);border-radius:50%;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.gen-t{font-family:'Nunito',sans-serif;font-size:17px;font-weight:300;color:#fff;text-transform:uppercase;letter-spacing:.1em}
+.gen-s{font-size:13px;color:rgba(255,255,255,.4);letter-spacing:.06em}
+.gen-pages{display:flex;gap:18px;margin-top:6px}
+.gp{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:rgba(255,255,255,.2);transition:color .3s}
+.gp.done{color:var(--wheat)}.gp.cur{color:#fff}
+
+/* PAGE SELECTOR */
+.page-selector{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.ps-card{display:flex;align-items:center;gap:14px;padding:16px 18px;background:#fff;border:2px solid var(--latte-dark);cursor:pointer;transition:all .15s;border-radius:var(--r);user-select:none}
+.ps-card:hover{border-color:var(--slate)}
+.ps-card.on{border-color:var(--dusk);background:rgba(69,92,111,.05)}
+.ps-check{width:22px;height:22px;border:2px solid var(--latte-dark);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;color:transparent;flex-shrink:0;transition:all .15s}
+.ps-card.on .ps-check{background:var(--dusk);border-color:var(--dusk);color:#fff}
+.ps-name{font-size:14px;font-weight:700;color:var(--dusk);letter-spacing:.04em;text-transform:uppercase;margin-bottom:2px}
+.ps-card:not(.on) .ps-name{color:var(--slate)}
+.ps-desc{font-size:12px;color:var(--slate)}
+.ps-tip{font-size:12px;font-weight:600;color:var(--slate);margin-bottom:0;padding:8px 14px;background:var(--pebble);border:1px solid var(--latte-dark);display:inline-block;border-radius:var(--r)}
+
+/* PER-PAGE GENERATE BUTTON on output tabs */
+.tab-gen-bar{display:flex;align-items:center;justify-content:space-between;padding:16px 0 8px;margin-bottom:4px}
+.tab-gen-bar-left{font-size:13px;color:var(--slate)}
+.tab-gen-bar-left strong{color:var(--dusk)}
+.tab-empty{background:#fff;border:1px solid var(--latte-dark);border-radius:var(--r);padding:40px;text-align:center;color:var(--slate)}
+.tab-empty-title{font-family:'Nunito',sans-serif;font-size:18px;font-weight:700;color:var(--dusk);text-transform:uppercase;letter-spacing:.04em;margin-bottom:8px}
+.tab-empty-sub{font-size:14px;margin-bottom:24px;line-height:1.6}
+
+@media(max-width:640px){
+  .nav{padding:0 16px}.shell{padding:0 16px 120px}
+  .g2,.g3{grid-template-columns:1fr}.landing{padding:40px 0 28px}
+  .step-hd{padding:32px 0 22px}.step-n{font-size:38px}
+  .export-bar{margin:0 -16px;padding:12px 16px}
+  .url-row{flex-direction:column}
+}
+@media print{
+  .nav,.prog-wrap,.export-bar,.cp-btn,.btn,.tabs{display:none!important}
+  .tab-panel{display:block!important}.cb{break-inside:avoid}
+  body{background:#fff}
+}
+</style>
+</head>
+<body>
+
+<nav class="nav">
+  <div class="nav-brand">
+    <div class="nav-mark">
+      <svg viewBox="0 0 20 20" fill="none">
+        <rect x="1" y="1" width="18" height="1.5" fill="white"/>
+        <rect x="1" y="4" width="11" height="1.5" fill="white"/>
+        <rect x="1" y="1" width="1.5" height="11" fill="white"/>
+        <rect x="4" y="4" width="1.5" height="8" fill="white"/>
+        <rect x="7" y="7" width="8" height="1.5" fill="white"/>
+        <rect x="7" y="7" width="1.5" height="6" fill="white"/>
+        <rect x="1" y="13" width="16" height="1.5" fill="white"/>
+        <rect x="1" y="16.5" width="16" height="1.5" fill="white"/>
+      </svg>
+    </div>
+    <span class="nav-wm">UpFrame</span>
+  </div>
+  <div class="nav-right">
+    <span class="nav-tool">Website Copy Generator</span>
+    <div class="nav-step" id="nav-step">Step <span id="nav-sn">1</span> of 8</div>
+  </div>
+</nav>
+
+<div class="prog-wrap"><div class="prog-fill" id="prog"></div></div>
+
+<div class="shell">
+
+<!-- ═══ PAGE 0: LANDING ═══ -->
+<div class="page active" id="pg-0">
+  <div class="landing">
+    <div class="eyebrow">Internal Tool · UpFrame Creative</div>
+    <h1>Website Copy<br><strong>Generator</strong></h1>
+    <p>Scan the client's existing website to pre-fill the questionnaire, then review, fill any gaps, and generate polished StoryBrand copy for all four pages.</p>
+    <div class="pills">
+      <div class="pill on">StoryBrand Framework</div>
+      <div class="pill on">AI-Written Copy</div>
+      <div class="pill on">SEO + GEO Ready</div>
+      <div class="pill on">4 Pages</div>
+    </div>
+    <div class="scan-card">
+      <h3>Scan Existing Website</h3>
+      <p>Enter the client's URL — we'll read the site and pre-fill what we can. You review and correct before generating.</p>
+      <div class="url-row">
+        <input type="url" id="scan-url" placeholder="https://clientwebsite.com">
+        <button class="btn btn-p" onclick="startScan()">Scan Site →</button>
+      </div>
+      <a class="skip-link" onclick="showPage(1)">No website yet — skip to the questionnaire →</a>
+    </div>
+
+    <div class="scan-prog" id="scan-prog">
+      <div class="scan-steps">
+        <div class="ss" id="ss1"><div class="ss-icon" id="ss1i">1</div>Fetching website content...</div>
+        <div class="ss" id="ss2"><div class="ss-icon" id="ss2i">2</div>Reading pages — home, about, services...</div>
+        <div class="ss" id="ss3"><div class="ss-icon" id="ss3i">3</div>Extracting business information...</div>
+        <div class="ss" id="ss4"><div class="ss-icon" id="ss4i">4</div>Mapping to StoryBrand framework...</div>
+        <div class="ss" id="ss5"><div class="ss-icon" id="ss5i">5</div>Pre-filling questionnaire...</div>
+      </div>
+    </div>
+
+    <div class="scan-banner" id="scan-banner">
+      <div class="scan-banner-title">Site scanned — questionnaire pre-filled</div>
+      <div class="scan-banner-sub">Review each step. Fields marked in amber need your attention. Red fields are required before generating.</div>
+      <div class="spills" id="spills"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ PAGE 1: BUSINESS BASICS ═══ -->
+<div class="page" id="pg-1">
+  <div class="step-hd">
+    <div class="step-ey">Step 1 of 8</div>
+    <div class="step-row"><div class="step-n">01</div><div>
+      <div class="step-t">Business Basics</div>
+      <p class="step-d">Foundation of everything. Review any scanned values and correct anything off.</p>
+      <div class="sb-tag">StoryBrand: Setting the Scene</div>
+    </div></div>
+  </div>
+  <div class="step-err-banner" id="err-1">Please fill in the required fields highlighted below before continuing.</div>
+  <div class="g2">
+    <div class="fg">
+      <label class="fl">Business Name<span class="req">*</span></label>
+      <div class="fstatus" id="fst-biz"></div>
+      <input class="fi" id="biz" placeholder="e.g. Main Street Hardware" data-req="true">
+      <div class="field-err" id="ferr-biz">Business name is required</div>
+    </div>
+    <div class="fg">
+      <label class="fl">Industry / Type<span class="req">*</span></label>
+      <div class="fstatus" id="fst-ind"></div>
+      <input class="fi" id="ind" placeholder="e.g. Hardware retail, Landscaping" data-req="true">
+      <div class="field-err" id="ferr-ind">Industry is required</div>
+    </div>
+  </div>
+  <div class="fg">
+    <label class="fl">One-Sentence Description<span class="req">*</span></label>
+    <div class="fh">What do you do, and for whom?</div>
+    <div class="fstatus" id="fst-liner"></div>
+    <input class="fi" id="liner" placeholder="e.g. We help homeowners and contractors get the right supplies to finish the job right." data-req="true">
+    <div class="field-err" id="ferr-liner">Description is required</div>
+  </div>
+  <div class="g2">
+    <div class="fg">
+      <label class="fl">Primary City<span class="req">*</span></label>
+      <div class="fstatus" id="fst-city"></div>
+      <input class="fi" id="city" placeholder="e.g. Brookings" data-req="true">
+      <div class="field-err" id="ferr-city">City is required</div>
+    </div>
+    <div class="fg">
+      <label class="fl">State</label>
+      <div class="fstatus" id="fst-state"></div>
+      <input class="fi" id="state" placeholder="e.g. SD">
+    </div>
+  </div>
+  <div class="fg">
+    <label class="fl">Service Area</label>
+    <div class="fstatus" id="fst-area"></div>
+    <input class="fi" id="area" placeholder="e.g. Brookings, Volga, Watertown area">
+  </div>
+  <div class="g2">
+    <div class="fg">
+      <label class="fl">Website URL</label>
+      <input class="fi" id="url" placeholder="yourwebsite.com">
+    </div>
+    <div class="fg">
+      <label class="fl">Phone Number</label>
+      <div class="fstatus" id="fst-phone"></div>
+      <input class="fi" id="phone" placeholder="605.123.4567">
+    </div>
+  </div>
+  <div class="fg">
+    <label class="fl">Primary Keywords / Search Terms</label>
+    <div class="fh">How do customers search for you on Google?</div>
+    <div class="fstatus" id="fst-kws"></div>
+    <input class="fi" id="kws" placeholder="e.g. hardware store Brookings SD, lumber supply near me">
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-g" onclick="showPage(0)">← Back</button>
+    <button class="btn btn-p" onclick="nextStep(1,2)">Continue →</button>
+  </div>
+</div>
+
+<!-- ═══ PAGE 2: THE HERO ═══ -->
+<div class="page" id="pg-2">
+  <div class="step-hd">
+    <div class="step-ey">Step 2 of 8</div>
+    <div class="step-row"><div class="step-n">02</div><div>
+      <div class="step-t">Your Customer Is the Hero</div>
+      <p class="step-d">In StoryBrand, your customer is the hero — not your business. Who are they and what do they really want?</p>
+      <div class="sb-tag">StoryBrand: The Character</div>
+    </div></div>
+  </div>
+  <div class="step-err-banner" id="err-2">Please fill in the required fields highlighted below before continuing.</div>
+  <div class="fg">
+    <label class="fl">Who is your ideal customer?<span class="req">*</span></label>
+    <div class="fh">Be specific — think about your best client, not everyone.</div>
+    <div class="fstatus" id="fst-who"></div>
+    <input class="fi" id="who" placeholder="e.g. Homeowners tackling weekend projects, local contractors" data-req="true">
+    <div class="field-err" id="ferr-who">Ideal customer description is required</div>
+  </div>
+  <div class="fg">
+    <label class="fl">What does your customer ultimately want?<span class="req">*</span></label>
+    <div class="fh">Their goal — not what you sell, what they're hoping for.</div>
+    <div class="fstatus" id="fst-want"></div>
+    <textarea class="ft" id="want" placeholder="e.g. They want to finish their project right, on time, without overspending. They want to feel confident they got the right stuff." data-req="true"></textarea>
+    <div class="field-err" id="ferr-want">Customer goal is required</div>
+  </div>
+  <div class="fg">
+    <label class="fl">Brand Tone</label>
+    <div class="chips" id="tone-chips">
+      <div class="chip" onclick="solo(this,'tone-chips')">Professional / Expert</div>
+      <div class="chip" onclick="solo(this,'tone-chips')">Friendly / Neighborly</div>
+      <div class="chip" onclick="solo(this,'tone-chips')">Trusted Advisor</div>
+      <div class="chip" onclick="solo(this,'tone-chips')">Approachable / Casual</div>
+      <div class="chip" onclick="solo(this,'tone-chips')">Premium / High-End</div>
+    </div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-g" onclick="showPage(1)">← Back</button>
+    <button class="btn btn-p" onclick="nextStep(2,3)">Continue →</button>
+  </div>
+</div>
+
+<!-- ═══ PAGE 3: THE PROBLEM ═══ -->
+<div class="page" id="pg-3">
+  <div class="step-hd">
+    <div class="step-ey">Step 3 of 8</div>
+    <div class="step-row"><div class="step-n">03</div><div>
+      <div class="step-t">The Problem</div>
+      <p class="step-d">Every hero has a villain. Name the problem standing between your customer and what they want.</p>
+      <div class="sb-tag">StoryBrand: The Problem</div>
+    </div></div>
+  </div>
+  <div class="step-err-banner" id="err-3">Please fill in the required fields highlighted below before continuing.</div>
+  <div class="fg">
+    <label class="fl">External Problem<span class="req">*</span></label>
+    <div class="fh">The practical, surface-level obstacle.</div>
+    <div class="fstatus" id="fst-ext"></div>
+    <textarea class="ft" id="ext" placeholder="e.g. They can't find the right supplies. They've wasted money buying the wrong things." data-req="true"></textarea>
+    <div class="field-err" id="ferr-ext">External problem is required</div>
+  </div>
+  <div class="fg">
+    <label class="fl">Internal Problem<span class="req">*</span></label>
+    <div class="fh">The emotional frustration underneath — how does it make them feel?</div>
+    <div class="fstatus" id="fst-int"></div>
+    <textarea class="ft" id="int" placeholder="e.g. They feel overwhelmed and afraid of making expensive mistakes." data-req="true"></textarea>
+    <div class="field-err" id="ferr-int">Internal problem is required</div>
+  </div>
+  <div class="fg">
+    <label class="fl">Philosophical Problem</label>
+    <div class="fh">The deeper "it just shouldn't be this way" belief. Optional but powerful.</div>
+    <textarea class="ft" id="phil" placeholder="e.g. Local businesses deserve support that actually understands their needs."></textarea>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-g" onclick="showPage(2)">← Back</button>
+    <button class="btn btn-p" onclick="nextStep(3,4)">Continue →</button>
+  </div>
+</div>
+
+<!-- ═══ PAGE 4: THE GUIDE ═══ -->
+<div class="page" id="pg-4">
+  <div class="step-hd">
+    <div class="step-ey">Step 4 of 8</div>
+    <div class="step-row"><div class="step-n">04</div><div>
+      <div class="step-t">You Are the Guide</div>
+      <p class="step-d">You're not the hero — you're Yoda. What gives you the empathy and authority to help?</p>
+      <div class="sb-tag">StoryBrand: The Guide</div>
+    </div></div>
+  </div>
+  <div class="step-err-banner" id="err-4">Please fill in the required fields highlighted below before continuing.</div>
+  <div class="fg">
+    <label class="fl">Empathy Statement<span class="req">*</span></label>
+    <div class="fh">Show you understand the customer's pain — make them feel heard.</div>
+    <div class="fstatus" id="fst-empathy"></div>
+    <textarea class="ft" id="empathy" placeholder="e.g. We know how frustrating it is to drive across town and still not find what you need." data-req="true"></textarea>
+    <div class="field-err" id="ferr-empathy">Empathy statement is required</div>
+  </div>
+  <div class="fg">
+    <label class="fl">Authority / Credentials<span class="req">*</span></label>
+    <div class="fh">Years in business, awards, certifications, clients served, community involvement.</div>
+    <div class="fstatus" id="fst-auth"></div>
+    <textarea class="ft" id="auth" placeholder="e.g. Locally owned for 30+ years. Over 10,000 customers served." data-req="true"></textarea>
+    <div class="field-err" id="ferr-auth">Authority/credentials are required</div>
+  </div>
+  <div class="fg">
+    <label class="fl">Key Differentiators<span class="req">*</span></label>
+    <div class="fh">What makes working with you genuinely different? Be specific.</div>
+    <div class="fstatus" id="fst-diff"></div>
+    <textarea class="ft" id="diff" placeholder="e.g. Our staff actually knows the products. We cut lumber to your specs. Real people answer the phone." data-req="true"></textarea>
+    <div class="field-err" id="ferr-diff">Differentiators are required</div>
+  </div>
+  <div class="fg">
+    <label class="fl">Your Story / Origin</label>
+    <div class="fh">Why did you start? What drives you? This feeds the About page.</div>
+    <div class="fstatus" id="fst-story"></div>
+    <textarea class="ft tall" id="story" placeholder="e.g. We started in 1992 because we saw a gap — contractors had to drive hours for specialty supplies."></textarea>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-g" onclick="showPage(3)">← Back</button>
+    <button class="btn btn-p" onclick="nextStep(4,5)">Continue →</button>
+  </div>
+</div>
+
+<!-- ═══ PAGE 5: PLAN & CTA ═══ -->
+<div class="page" id="pg-5">
+  <div class="step-hd">
+    <div class="step-ey">Step 5 of 8</div>
+    <div class="step-row"><div class="step-n">05</div><div>
+      <div class="step-t">The Plan & Call to Action</div>
+      <p class="step-d">Give customers a clear, simple path forward. Three steps max. Then tell them exactly what to do.</p>
+      <div class="sb-tag">StoryBrand: The Plan + CTA</div>
+    </div></div>
+  </div>
+  <div class="step-err-banner" id="err-5">Please fill in the required fields highlighted below before continuing.</div>
+  <div class="rule"><span class="rule-lbl">3-Step Plan</span></div>
+  <div class="g3">
+    <div class="fg"><label class="fl">Step 1<span class="req">*</span></label><input class="fi" id="s1" placeholder="e.g. Browse our inventory" data-req="true"><div class="field-err" id="ferr-s1">Required</div></div>
+    <div class="fg"><label class="fl">Step 2<span class="req">*</span></label><input class="fi" id="s2" placeholder="e.g. Talk to our team" data-req="true"><div class="field-err" id="ferr-s2">Required</div></div>
+    <div class="fg"><label class="fl">Step 3<span class="req">*</span></label><input class="fi" id="s3" placeholder="e.g. Get what you need" data-req="true"><div class="field-err" id="ferr-s3">Required</div></div>
+  </div>
+  <div class="rule"><span class="rule-lbl">Calls to Action</span></div>
+  <div class="g2">
+    <div class="fg">
+      <label class="fl">Primary CTA<span class="req">*</span></label>
+      <div class="fh">The main thing you want them to do.</div>
+      <input class="fi" id="cta1" placeholder="e.g. Visit Us Today, Get a Free Quote" data-req="true">
+      <div class="field-err" id="ferr-cta1">Primary CTA is required</div>
+    </div>
+    <div class="fg">
+      <label class="fl">Secondary CTA</label>
+      <div class="fh">Softer ask for those not ready yet.</div>
+      <input class="fi" id="cta2" placeholder="e.g. Learn More, View Our Services">
+    </div>
+  </div>
+  <div class="fg">
+    <label class="fl">What happens when they contact you?</label>
+    <div class="fh">Sets expectations, removes hesitation.</div>
+    <div class="fstatus" id="fst-process"></div>
+    <textarea class="ft" id="process" placeholder="e.g. Call or stop in. Tell us what you're working on. We'll point you to exactly what you need."></textarea>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-g" onclick="showPage(4)">← Back</button>
+    <button class="btn btn-p" onclick="nextStep(5,6)">Continue →</button>
+  </div>
+</div>
+
+<!-- ═══ PAGE 6: SUCCESS & FAILURE ═══ -->
+<div class="page" id="pg-6">
+  <div class="step-hd">
+    <div class="step-ey">Step 6 of 8</div>
+    <div class="step-row"><div class="step-n">06</div><div>
+      <div class="step-t">Success & Failure</div>
+      <p class="step-d">Paint the picture of life with your help — and what's at stake without it.</p>
+      <div class="sb-tag">StoryBrand: Stakes</div>
+    </div></div>
+  </div>
+  <div class="step-err-banner" id="err-6">Please fill in the required fields highlighted below before continuing.</div>
+  <div class="fg">
+    <label class="fl">What does success look like?<span class="req">*</span></label>
+    <div class="fh">The transformation — life after working with you.</div>
+    <div class="fstatus" id="fst-success"></div>
+    <textarea class="ft" id="success" placeholder="e.g. They finish the project on budget, on time, and actually feel proud of what they built." data-req="true"></textarea>
+    <div class="field-err" id="ferr-success">Success description is required</div>
+  </div>
+  <div class="fg">
+    <label class="fl">What's at stake without help?</label>
+    <div class="fh">The cost of inaction.</div>
+    <textarea class="ft" id="failure" placeholder="e.g. More wasted trips. Wrong materials. Projects stalled halfway."></textarea>
+  </div>
+  <div class="fg">
+    <label class="fl">Customer Testimonial or Result</label>
+    <div class="fh">Real quote or measurable result — verbatim if possible.</div>
+    <div class="fstatus" id="fst-testim"></div>
+    <textarea class="ft" id="testim" placeholder="e.g. 'I've been coming here for 15 years. The staff actually knows their stuff.' — Mike T."></textarea>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-g" onclick="showPage(5)">← Back</button>
+    <button class="btn btn-p" onclick="nextStep(6,7)">Continue →</button>
+  </div>
+</div>
+
+<!-- ═══ PAGE 7: SERVICES ═══ -->
+<div class="page" id="pg-7">
+  <div class="step-hd">
+    <div class="step-ey">Step 7 of 8</div>
+    <div class="step-row"><div class="step-n">07</div><div>
+      <div class="step-t">Services & Offerings</div>
+      <p class="step-d">Your main services or product categories — the spine of the Services page.</p>
+      <div class="sb-tag">StoryBrand: The Plan in Action</div>
+    </div></div>
+  </div>
+  <div class="step-err-banner" id="err-7">Please fill in the required fields highlighted below before continuing.</div>
+  <div class="fg">
+    <label class="fl">Service #1<span class="req">*</span></label>
+    <div class="fstatus" id="fst-sv1n"></div>
+    <div class="g2">
+      <div><input class="fi" id="sv1n" placeholder="Service name" data-req="true"><div class="field-err" id="ferr-sv1n">At least one service name is required</div></div>
+      <input class="fi" id="sv1d" placeholder="Brief description">
+    </div>
+  </div>
+  <div class="fg"><label class="fl">Service #2</label><div class="g2"><input class="fi" id="sv2n" placeholder="Service name"><input class="fi" id="sv2d" placeholder="Brief description"></div></div>
+  <div class="fg"><label class="fl">Service #3</label><div class="g2"><input class="fi" id="sv3n" placeholder="Service name"><input class="fi" id="sv3d" placeholder="Brief description"></div></div>
+  <div class="fg"><label class="fl">Service #4 (optional)</label><div class="g2"><input class="fi" id="sv4n" placeholder="Service name"><input class="fi" id="sv4d" placeholder="Brief description"></div></div>
+  <div class="fg"><label class="fl">Service #5 (optional)</label><div class="g2"><input class="fi" id="sv5n" placeholder="Service name"><input class="fi" id="sv5d" placeholder="Brief description"></div></div>
+  <div class="rule"><span class="rule-lbl">Pricing & Process</span></div>
+  <div class="g2">
+    <div class="fg"><label class="fl">Pricing Model</label>
+      <select class="fs" id="pricing">
+        <option value="">Select...</option>
+        <option>Per project / custom quote</option>
+        <option>Hourly rate</option>
+        <option>Fixed packages</option>
+        <option>Retail / standard pricing</option>
+        <option>Subscription / retainer</option>
+        <option>Free consultation, then quote</option>
+      </select>
+    </div>
+    <div class="fg"><label class="fl">Typical Turnaround</label><input class="fi" id="turn" placeholder="e.g. Same day, 2–3 business days"></div>
+  </div>
+  <div class="btn-row">
+    <button class="btn btn-g" onclick="showPage(6)">← Back</button>
+    <button class="btn btn-p" onclick="nextStep(7,8)">Continue →</button>
+  </div>
+</div>
+
+<!-- ═══ PAGE 8: CONTACT ═══ -->
+<div class="page" id="pg-8">
+  <div class="step-hd">
+    <div class="step-ey">Step 8 of 8</div>
+    <div class="step-row"><div class="step-n">08</div><div>
+      <div class="step-t">Contact & Final Details</div>
+      <p class="step-d">Last stretch. These details feed the Contact page and keep your NAP consistent.</p>
+    </div></div>
+  </div>
+  <div class="step-err-banner" id="err-8">Please fill in the required fields highlighted below before continuing.</div>
+  <div class="g2">
+    <div class="fg"><label class="fl">Street Address</label><div class="fstatus" id="fst-addr"></div><input class="fi" id="addr" placeholder="414 Main Avenue, Suite 2"></div>
+    <div class="fg"><label class="fl">City, State, ZIP</label><div class="fstatus" id="fst-czip"></div><input class="fi" id="czip" placeholder="Brookings, SD 57006"></div>
+  </div>
+  <div class="g2">
+    <div class="fg"><label class="fl">Business Hours</label><div class="fstatus" id="fst-hours"></div><textarea class="ft" id="hours" placeholder="Mon–Fri: 7:30 AM – 5:30 PM&#10;Sat: 8:00 AM – 2:00 PM&#10;Sun: Closed"></textarea></div>
+    <div>
+      <div class="fg"><label class="fl">Email Address</label><div class="fstatus" id="fst-email"></div><input class="fi" id="email" placeholder="hello@yourbusiness.com"></div>
+      <div class="fg"><label class="fl">Social / Other Links</label><div class="fstatus" id="fst-social"></div><input class="fi" id="social" placeholder="@yourbusiness or URL"></div>
+    </div>
+  </div>
+  <div class="fg"><label class="fl">Why contact you vs. a competitor?</label><div class="fh">A last nudge right on the Contact page.</div><textarea class="ft" id="whycon" placeholder="e.g. We respond within one business day. Friendly, knowledgeable, no runaround."></textarea></div>
+  <div class="fg"><label class="fl">Anything else we should know?</label><textarea class="ft" id="extra" placeholder="Optional — special programs, contractor accounts, parking, etc."></textarea></div>
+
+  <div class="rule"><span class="rule-lbl">Choose Pages to Generate</span></div>
+  <p style="font-size:13px;color:var(--slate);margin-bottom:16px;line-height:1.6;">Select which pages to write now. You can generate remaining pages later from the output screen — one at a time saves your API quota.</p>
+  <div class="page-selector" id="page-selector">
+    <div class="ps-card on" onclick="togglePage(this,'home')">
+      <div class="ps-check">✓</div>
+      <div class="ps-info">
+        <div class="ps-name">Home</div>
+        <div class="ps-desc">Hero, problem, guide, plan, CTA</div>
+      </div>
+    </div>
+    <div class="ps-card on" onclick="togglePage(this,'about')">
+      <div class="ps-check">✓</div>
+      <div class="ps-info">
+        <div class="ps-name">About</div>
+        <div class="ps-desc">Story, mission, credentials, community</div>
+      </div>
+    </div>
+    <div class="ps-card on" onclick="togglePage(this,'services')">
+      <div class="ps-check">✓</div>
+      <div class="ps-info">
+        <div class="ps-name">Services</div>
+        <div class="ps-desc">Each service, FAQ, process, CTA</div>
+      </div>
+    </div>
+    <div class="ps-card on" onclick="togglePage(this,'contact')">
+      <div class="ps-check">✓</div>
+      <div class="ps-info">
+        <div class="ps-name">Contact</div>
+        <div class="ps-desc">Labels, form copy, hours, NAP</div>
+      </div>
+    </div>
+  </div>
+  <div class="ps-tip" id="ps-tip">4 pages selected — uses ~4 API calls</div>
+
+  <div class="btn-row">
+    <button class="btn btn-g" onclick="showPage(7)">← Back</button>
+    <button class="btn btn-w btn-lg" onclick="startGeneration()">Generate Selected Pages →</button>
+  </div>
+</div>
+
+<!-- ═══ PAGE 9: OUTPUT ═══ -->
+<div class="page" id="pg-9">
+  <div class="out-header">
+    <div class="eyebrow">AI-Written Copy · Ready for Review</div>
+    <h1>Website Copy for<br><strong id="out-biz-name"></strong></h1>
+    <p>Review each page tab below. Copy individual sections or use the export bar. <span>First draft — edit to match your client's voice before publishing.</span></p>
+  </div>
+
+  <div class="api-err" id="api-err"><strong>Generation error:</strong> <span id="api-err-msg"></span></div>
+
+  <div class="tabs" id="tabs-bar">
+    <button class="tab-btn on" onclick="showTab('home',this)">Home</button>
+    <button class="tab-btn" onclick="showTab('about',this)">About</button>
+    <button class="tab-btn" onclick="showTab('services',this)">Services</button>
+    <button class="tab-btn" onclick="showTab('contact',this)">Contact</button>
+  </div>
+
+  <div class="tab-panel on" id="tp-home"></div>
+  <div class="tab-panel" id="tp-about"></div>
+  <div class="tab-panel" id="tp-services"></div>
+  <div class="tab-panel" id="tp-contact"></div>
+
+  <div class="export-bar">
+    <div class="export-l">Copy for <span id="out-biz-bar"></span></div>
+    <div class="export-r">
+      <button class="so-btn" onclick="startOver()">↩ Start Over</button>
+      <button class="btn btn-g btn-sm" onclick="editAndRerun()">✎ Edit & Regenerate</button>
+      <button class="btn btn-p btn-sm" onclick="generateCurrentTab()" id="gen-current-btn">⟳ Write This Page</button>
+      <button class="btn btn-g btn-sm" onclick="copyAll()">⎘ Copy All</button>
+      <button class="btn btn-g btn-sm" onclick="exportGoogleDoc()">↗ Google Doc</button>
+      <button class="btn btn-w btn-sm" onclick="window.print()">Print / PDF</button>
+    </div>
+  </div>
+</div>
+
+</div><!-- shell -->
+
+<!-- GENERATING OVERLAY -->
+<div class="gen-ov" id="gen-ov">
+  <div class="spinner"></div>
+  <div class="gen-t" id="gen-title">Writing Your Copy</div>
+  <div class="gen-s" id="gen-sub">Applying StoryBrand framework...</div>
+  <div class="gen-pages">
+    <div class="gp" id="gp-home">Home</div>
+    <div class="gp" id="gp-about">About</div>
+    <div class="gp" id="gp-services">Services</div>
+    <div class="gp" id="gp-contact">Contact</div>
+  </div>
+</div>
+
+<script>
+// ════════════════════════════════
+// PAGE SELECTOR
+// ════════════════════════════════
+function togglePage(el, page) {
+  el.classList.toggle('on');
+  updatePsTip();
+}
+
+function updatePsTip() {
+  const selected = getSelectedPages();
+  const tip = document.getElementById('ps-tip');
+  if (!tip) return;
+  if (selected.length === 0) {
+    tip.textContent = 'No pages selected — select at least one';
+    tip.style.color = 'var(--danger)';
+  } else {
+    tip.textContent = `${selected.length} page${selected.length>1?'s':''} selected — uses ~${selected.length} API call${selected.length>1?'s':''}`;
+    tip.style.color = 'var(--slate)';
+  }
+}
+
+function getSelectedPages() {
+  return [...document.querySelectorAll('.ps-card.on')].map(el => {
+    return el.querySelector('.ps-name').textContent.trim().toLowerCase();
+  });
+}
+
+// ════════════════════════════════
+// EMPTY STATE for ungenerated tabs
+// ════════════════════════════════
+function renderEmpty(page) {
+  const labels = { home:'Home Page', about:'About Page', services:'Services Page', contact:'Contact Page' };
+  return `<div class="tab-empty">
+    <div class="tab-empty-title">${labels[page]} Not Yet Generated</div>
+    <div class="tab-empty-sub">Switch to this tab and click <strong>"⟳ Write This Page"</strong> in the bar below to generate it — uses 1 API call.</div>
+    <button class="btn btn-p" onclick="generateSinglePage('${page}')">Write ${labels[page]} →</button>
+  </div>`;
+}
+
+// ════════════════════════════════
+// CURRENT TAB TRACKING
+// ════════════════════════════════
+let _currentTab = 'home';
+const _origShowTab = window.showTab;
+
+function showTab(name, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('on'));
+  document.getElementById('tp-' + name).classList.add('on');
+  btn.classList.add('on');
+  _currentTab = name;
+}
+
+function generateCurrentTab() {
+  generateSinglePage(_currentTab);
+}
+
+// ════════════════════════════════
+// GENERATE A SINGLE PAGE
+// ════════════════════════════════
+async function generateSinglePage(page) {
+  const c = window._ctx || buildCtx();
+  window._ctx = c;
+
+  document.getElementById('out-biz-name').textContent = c.biz;
+  document.getElementById('out-biz-bar').textContent = c.biz;
+
+  // Switch to that tab
+  const allPages = ['home','about','services','contact'];
+  const idx = allPages.indexOf(page);
+  document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('on', i === idx));
+  document.querySelectorAll('.tab-panel').forEach((p,i) => p.classList.toggle('on', i === idx));
+  _currentTab = page;
+
+  // Show loading
+  document.getElementById('tp-' + page).innerHTML =
+    `<div class="cb"><div class="cb-head"><div class="cb-lbl"><div class="cb-dot"></div>Writing ${page} copy...</div></div><div class="cb-body streaming" id="stream-${page}" style="min-height:120px;color:var(--slate);font-size:14px;"></div></div>`;
+
+  allPages.forEach(p => { document.getElementById('gp-'+p).className = 'gp' + (p === page ? ' cur' : ''); });
+  document.getElementById('gen-title').textContent = 'Pass 1 — Writing ' + page.charAt(0).toUpperCase() + page.slice(1);
+  document.getElementById('gen-sub').textContent = 'Applying StoryBrand framework...';
+  document.getElementById('gen-ov').classList.add('show');
+
+  const sys = sysPrompt(c);
+  let raw = '';
+  const streamEl = document.getElementById('stream-' + page);
+
+  try {
+    // Pass 1: Write
+    await callClaude(sys, pagePrompt(page, c), chunk => {
+      raw += chunk;
+      if (streamEl) streamEl.textContent = raw.slice(-500);
+    });
+    window._raws = window._raws || {};
+    window._raws[page] = raw;
+
+    // Pass 2: Editor review
+    document.getElementById('gen-title').textContent = 'Pass 2 — StoryBrand Editor Review';
+    document.getElementById('gen-sub').textContent = 'Scoring & rewriting weak sections...';
+    if (streamEl) streamEl.textContent = 'Running StoryBrand editor pass...';
+
+    const parsed = parseBlocks(raw);
+    const copyBlocks = parsed.filter(b => !['SEO PAGE TITLE','META DESCRIPTION','TARGET KEYWORDS','NAP BLOCK'].some(k=>b.label.includes(k.replace('SEO ',''))));
+
+    let editorData = null;
+    try {
+      editorData = await callClaudeJSON(editorSystemPrompt(), editorUserPrompt(page, copyBlocks, c));
+    } catch(edErr) {
+      console.warn('Editor pass failed (non-fatal):', edErr.message);
+    }
+
+    document.getElementById('gp-' + page).className = 'gp done';
+    document.getElementById('tp-' + page).innerHTML = renderPage(raw, page, c, editorData);
+
+  } catch(e) {
+    document.getElementById('tp-' + page).innerHTML =
+      `<div class="cb"><div class="cb-head"><div class="cb-lbl"><div class="cb-dot"></div>Generation failed</div></div><div class="cb-body" style="color:#7f1d1d">Error: ${esc(e.message)}<br><br><small>Rate limited? Wait a few hours then retry with "⟳ Write This Page".</small></div></div>`;
+    document.getElementById('api-err').style.display = 'block';
+    document.getElementById('api-err-msg').textContent = e.message;
+  }
+
+  document.getElementById('gen-ov').classList.remove('show');
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ════════════════════════════════
+// PAGE NAVIGATION
+// ════════════════════════════════
+function showPage(n) {
+  document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+  document.getElementById('pg-' + n).classList.add('active');
+  const prog = document.getElementById('prog');
+  const navStep = document.getElementById('nav-step');
+  if (n === 0) { prog.style.width = '0%'; navStep.style.display = 'none'; }
+  else if (n === 9) { prog.style.width = '100%'; navStep.style.display = 'none'; }
+  else { prog.style.width = (n / 8 * 100) + '%'; navStep.style.display = 'flex'; document.getElementById('nav-sn').textContent = n; }
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ════════════════════════════════
+// VALIDATION
+// ════════════════════════════════
+function nextStep(current, next) {
+  const page = document.getElementById('pg-' + current);
+  const reqs = page.querySelectorAll('[data-req="true"]');
+  let valid = true;
+
+  reqs.forEach(el => {
+    const id = el.id;
+    const errEl = document.getElementById('ferr-' + id);
+    if (!el.value.trim()) {
+      el.classList.add('err');
+      if (errEl) errEl.classList.add('show');
+      valid = false;
+      el.addEventListener('input', function fix() {
+        if (el.value.trim()) { el.classList.remove('err'); if(errEl) errEl.classList.remove('show'); }
+        el.removeEventListener('input', fix);
+      });
+    } else {
+      el.classList.remove('err');
+      if (errEl) errEl.classList.remove('show');
+    }
+  });
+
+  const banner = document.getElementById('err-' + current);
+  if (!valid) {
+    banner.classList.add('show');
+    // Scroll to first error
+    const first = page.querySelector('.err');
+    if (first) first.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+  banner.classList.remove('show');
+  showPage(next);
+}
+
+// ════════════════════════════════
+// TABS (output)
+// ════════════════════════════════
+function showTab(name, btn) {
+  document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('on'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('on'));
+  document.getElementById('tp-' + name).classList.add('on');
+  btn.classList.add('on');
+}
+
+// ════════════════════════════════
+// CHIP TOGGLE
+// ════════════════════════════════
+function solo(el, grp) {
+  document.querySelectorAll('#' + grp + ' .chip').forEach(c => c.classList.remove('on'));
+  el.classList.add('on');
+}
+
+// ════════════════════════════════
+// HELPERS
+// ════════════════════════════════
+function v(id) { const el = document.getElementById(id); return el ? el.value.trim() : ''; }
+function getChips(grp) {
+  return [...document.querySelectorAll('#' + grp + ' .chip.on')].map(c => c.textContent.trim()).join(', ');
+}
+function setField(id, val, found) {
+  const el = document.getElementById(id);
+  if (!el || !val) {
+    const st = document.getElementById('fst-' + id);
+    if (st && !val) { st.className = 'fstatus missing'; st.textContent = 'Not found — please fill in'; st.style.display = 'flex'; el && el.classList.add('needs-review'); }
+    return;
+  }
+  el.value = val;
+  const st = document.getElementById('fst-' + id);
+  if (st) { st.className = 'fstatus found'; st.textContent = 'Found on site'; st.style.display = 'flex'; el.classList.remove('needs-review'); }
+}
+function esc(s) { return String(s||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;'); }
+function escQ(s) { return String(s||'').replace(/\\/g,'\\\\').replace(/`/g,'\\`').replace(/\n/g,'\\n'); }
+function charCls(n, max, warn) { warn=warn||max-15; return n>max?'over':n>warn?'warn':'ok'; }
+function cpText(btn, text) {
+  navigator.clipboard.writeText(text.replace(/\\n/g,'\n').replace(/\\`/g,'`')).then(() => {
+    btn.classList.add('copied'); const o=btn.textContent; btn.textContent='✓ Copied';
+    setTimeout(() => { btn.classList.remove('copied'); btn.textContent=o; }, 2000);
+  });
+}
+function delay(ms){ return new Promise(r=>setTimeout(r,ms)); }
+
+// ════════════════════════════════
+// SCAN
+// ════════════════════════════════
+function setSS(n,state) {
+  const el=document.getElementById('ss'+n), ic=document.getElementById('ss'+n+'i');
+  if(!el) return;
+  el.className='ss'+(state==='done'?' done':state==='cur'?' cur':'');
+  if(state==='done') ic.textContent='✓';
+}
+
+async function startScan() {
+  let url = document.getElementById('scan-url').value.trim();
+  if (!url) { alert('Please enter a URL to scan.'); return; }
+  if (!url.startsWith('http')) url = 'https://' + url;
+
+  document.getElementById('scan-prog').classList.add('show');
+  document.getElementById('scan-banner').classList.remove('show');
+  [1,2,3,4,5].forEach(n => setSS(n,''));
+  setSS(1,'cur');
+
+  try {
+    await delay(400); setSS(1,'done'); setSS(2,'cur');
+    await delay(300); setSS(2,'done'); setSS(3,'cur');
+    await delay(300); setSS(3,'done'); setSS(4,'cur');
+
+    const result = await scanWithClaude(url);
+
+    setSS(4,'done'); setSS(5,'cur');
+    await delay(300);
+    prefill(result, url);
+    setSS(5,'done');
+    await delay(200);
+    showScanBanner(result);
+    await delay(600);
+    showPage(1);
+  } catch(e) {
+    document.getElementById('scan-prog').classList.remove('show');
+    alert('Scan failed: ' + e.message + '\n\nYou can still fill in the questionnaire manually.');
+    showPage(1);
+  }
+}
+
+async function scanWithClaude(url) {
+  const resp = await fetch('https://api.anthropic.com/v1/messages', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({
+      model:'claude-sonnet-4-20250514',
+      max_tokens:2000,
+      tools:[{type:'web_search_20250305',name:'web_search'}],
+      messages:[{role:'user',content:`Analyze the website at ${url}. Use web search to read its homepage, about, services, and contact pages. Return ONLY valid JSON with these keys (null if not found). No text before or after the JSON.
+
+{"biz":null,"ind":null,"liner":null,"city":null,"state":null,"area":null,"phone":null,"email":null,"addr":null,"czip":null,"hours":null,"social":null,"kws":null,"who":null,"want":null,"ext":null,"int":null,"empathy":null,"auth":null,"diff":null,"story":null,"process":null,"success":null,"testim":null,"sv1n":null,"sv1d":null,"sv2n":null,"sv2d":null,"sv3n":null,"sv3d":null,"sv4n":null,"sv4d":null,"sv5n":null,"sv5d":null,"pricing":null,"turn":null,"tone":null,"cta1":null,"cta2":null,"whycon":null}`}]
+    })
+  });
+  if (!resp.ok) { const e=await resp.json().catch(()=>{}); throw new Error(e?.error?.message||'API error '+resp.status); }
+  const data = await resp.json();
+  let raw = data.content.filter(b=>b.type==='text').map(b=>b.text).join('');
+  const m = raw.match(/\{[\s\S]*\}/);
+  if (!m) throw new Error('Could not parse scan results');
+  return JSON.parse(m[0]);
+}
+
+function prefill(d, scannedUrl) {
+  const fields = ['biz','ind','liner','city','state','area','phone','email','addr','czip','hours','social','kws','who','want','ext','int','empathy','auth','diff','story','process','success','testim','sv1n','sv1d','sv2n','sv2d','sv3n','sv3d','sv4n','sv4d','sv5n','sv5d','turn','whycon'];
+  fields.forEach(id => setField(id, d[id], !!d[id]));
+  const urlEl = document.getElementById('url');
+  if (urlEl && !urlEl.value) urlEl.value = scannedUrl;
+  if (d.tone) {
+    document.querySelectorAll('#tone-chips .chip').forEach(c => {
+      if (c.textContent.toLowerCase().includes((d.tone||'').toLowerCase().split('/')[0].trim())) c.classList.add('on');
+    });
+  }
+}
+
+function showScanBanner(d) {
+  const key = ['biz','city','phone','who','ext','auth','diff','sv1n'];
+  const lbl = {biz:'Business Name',city:'City',phone:'Phone',who:'Target Customer',ext:'Problem',auth:'Credentials',diff:'Differentiators',sv1n:'Services'};
+  document.getElementById('spills').innerHTML =
+    key.map(k => `<div class="spill ${d[k]?'ok':''}">${lbl[k]}${d[k]?'':' — needs input'}</div>`).join('');
+  document.getElementById('scan-banner').classList.add('show');
+}
+
+// ════════════════════════════════
+// BUILD CONTEXT
+// ════════════════════════════════
+function buildCtx() {
+  const svcs = [[v('sv1n'),v('sv1d')],[v('sv2n'),v('sv2d')],[v('sv3n'),v('sv3d')],[v('sv4n'),v('sv4d')],[v('sv5n'),v('sv5d')]].filter(([n])=>n);
+  return {
+    biz:v('biz')||'the business', ind:v('ind'), liner:v('liner'),
+    city:v('city'), state:v('state'), area:v('area')||v('city'),
+    url:v('url'), phone:v('phone'), kws:v('kws'),
+    who:v('who'), want:v('want'), tone:getChips('tone-chips')||'Friendly / Neighborly',
+    ext:v('ext'), int:v('int'), phil:v('phil'),
+    empathy:v('empathy'), auth:v('auth'), diff:v('diff'), story:v('story'),
+    s1:v('s1'), s2:v('s2'), s3:v('s3'),
+    cta1:v('cta1')||'Contact Us Today', cta2:v('cta2'), process:v('process'),
+    success:v('success'), failure:v('failure'), testim:v('testim'),
+    svcs, pricing:v('pricing'), turn:v('turn'),
+    addr:v('addr'), czip:v('czip'), hours:v('hours'),
+    email:v('email'), social:v('social'), whycon:v('whycon'), extra:v('extra'),
+  };
+}
+
+// ════════════════════════════════
+// SYSTEM + PAGE PROMPTS
+// ════════════════════════════════
+function sysPrompt(c) {
+  return `You are an expert website copywriter specialising in the StoryBrand framework, local SEO, and GEO (Generative Engine Optimization for AI search). You write for UpFrame Creative, a marketing agency serving rural and regional businesses.
+
+Write polished, professional, publish-ready website copy. Not reformatted notes — real, flowing, human copy a visitor would actually read.
+
+BUSINESS: ${c.biz} | Industry: ${c.ind||'not specified'}
+One-liner: ${c.liner} | Location: ${c.city}, ${c.state} | Service area: ${c.area}
+Customer: ${c.who} | What they want: ${c.want} | Tone: ${c.tone}
+
+STORYBRAND:
+- External problem: ${c.ext}
+- Internal problem: ${c.int}
+- Philosophical: ${c.phil||'not provided'}
+- Empathy: ${c.empathy} | Authority: ${c.auth} | Differentiators: ${c.diff}
+- Story: ${c.story||'not provided'}
+- Plan: ${c.s1} → ${c.s2} → ${c.s3}
+- Primary CTA: ${c.cta1} | Secondary CTA: ${c.cta2||'not specified'}
+- Process: ${c.process} | Success: ${c.success} | Stakes: ${c.failure||'not provided'}
+- Testimonial: ${c.testim||'not provided'}
+
+SERVICES: ${c.svcs.map(([n,d])=>n+(d?': '+d:'')).join(' | ')||'Not specified'}
+Pricing: ${c.pricing||'not specified'} | Turnaround: ${c.turn||'not specified'}
+CONTACT: ${c.addr} ${c.czip} | ${c.phone} | ${c.email} | Hours: ${c.hours}
+
+RULES:
+1. Write REAL copy — synthesise and elevate, do not restate inputs verbatim
+2. Customer is the hero, business is the guide — lead with the customer's world
+3. Tone: ${c.tone} — adjust word choice, rhythm, personality accordingly
+4. Include ${c.city}, ${c.state} and service area naturally — 3–5x per page, never stuffed
+5. Headlines in ALL CAPS. Body copy in sentence case
+6. Contractions welcome — sound human, not corporate
+7. Zero filler phrases: no "world-class," "passion for excellence," "dedicated team"
+8. Weave keywords (${c.kws}) naturally into headlines and opening paragraphs
+9. Write key sections to directly answer likely AI search queries`;
+}
+
+function pagePrompt(page, c) {
+  const ps = {
+    home:`Write the complete HOME page for ${c.biz}. Use these EXACT section labels (label in ALL CAPS, colon, then the copy on the same or next line):
+
+HERO HEADLINE: (5–8 words, punchy, customer-focused — starts with the customer's world, not the business name)
+HERO SUBHEADLINE: (1–2 sentences expanding the headline. Include ${c.city} naturally.)
+PRIMARY CTA BUTTON: (2–4 words)
+SECONDARY CTA BUTTON: (2–4 words)
+
+PROBLEM SECTION HEADLINE: (validates the customer's frustration — short)
+PROBLEM BODY: (2–3 sentences. Name the external problem, then the emotional frustration underneath it. Make them feel seen.)
+
+GUIDE INTRO HEADLINE: (positions ${c.biz} as the trusted guide — empathetic, not boastful)
+GUIDE BODY: (2–3 sentences. Empathy first, then authority. Reassure, don't brag.)
+
+HOW IT WORKS HEADLINE:
+STEP 1 LABEL: (3–5 words)
+STEP 1 DESCRIPTION: (one sentence)
+STEP 2 LABEL: (3–5 words)
+STEP 2 DESCRIPTION: (one sentence)
+STEP 3 LABEL: (3–5 words)
+STEP 3 DESCRIPTION: (one sentence)
+
+SERVICES PREVIEW HEADLINE:
+SERVICES PREVIEW BODY: (2 sentences introducing services as solutions, list top 3 service names)
+
+SUCCESS SECTION HEADLINE: (customer-focused — what life looks like after)
+SUCCESS BODY: (2–3 sentences. Paint the transformation. Make it real and attainable.)
+${c.testim?'TESTIMONIAL PULL QUOTE: (use the testimonial provided, lightly polish grammar only)':''}
+
+CLOSING CTA HEADLINE: (urgency or stakes — what do they risk by waiting?)
+CLOSING CTA BODY: (1–2 sentences then the CTA)
+CLOSING PRIMARY CTA BUTTON:
+
+SEO PAGE TITLE: (50–60 chars, business name + primary keyword + city/state)
+META DESCRIPTION: (140–155 chars, compelling, location + CTA)
+TARGET KEYWORDS: (5–8 comma-separated keywords)`,
+
+    about:`Write the complete ABOUT page for ${c.biz}. Use these EXACT section labels:
+
+PAGE HEADLINE: (ALL CAPS — more interesting than "About Us" — a belief or mission statement)
+OPENING PARAGRAPH: (2–3 sentences. Open with a shared belief or the customer's world — NOT "We were founded in...". Include ${c.city}, ${c.state}.)
+
+OUR STORY HEADLINE:
+OUR STORY BODY: (3–4 sentences. Human, specific. Why this business exists, what gap it fills, what drives the team. Year founded if known.)
+
+OUR MISSION HEADLINE:
+OUR MISSION BODY: (1–2 sentences. Clear, direct mission statement.)
+
+WHAT WE BELIEVE HEADLINE:
+WHAT WE BELIEVE BODY: (2–3 sentences. The philosophical belief driving the business — why things should be better for customers.)
+
+WHY CHOOSE US HEADLINE:
+WHY CHOOSE US BODY: (3–4 sentences. Credentials + differentiators written as customer benefits, not a resume.)
+
+COMMUNITY SECTION HEADLINE:
+COMMUNITY BODY: (2 sentences. Local roots, serving ${c.area}, pride in community.)
+
+ABOUT CTA HEADLINE:
+ABOUT CTA BODY: (1–2 sentences inviting action)
+ABOUT CTA BUTTON:
+
+SEO PAGE TITLE: (50–60 chars)
+META DESCRIPTION: (140–155 chars)
+TARGET KEYWORDS:`,
+
+    services:`Write the complete SERVICES page for ${c.biz}. Use these EXACT section labels:
+
+PAGE HEADLINE: (ALL CAPS — frame services as solutions to the customer's problem)
+PAGE INTRO: (2–3 sentences. Frame as solutions. Include ${c.city} and service area.)
+
+${c.svcs.map(([n,d],i)=>`SERVICE ${i+1} HEADLINE: (ALL CAPS — the service name: ${n})
+SERVICE ${i+1} BODY: (3–4 sentences. What it is, who it's for, what makes ${c.biz}'s version worth choosing, and the outcome the customer gets. Specific, no fluff.)
+`).join('\n')}
+HOW WE WORK HEADLINE:
+HOW WE WORK BODY: (2–3 sentences on process and expectations. Pricing: ${c.pricing||'not specified'}. Turnaround: ${c.turn||'not specified'}.)
+
+SERVICES FAQ HEADLINE:
+FAQ 1 QUESTION: (most common question about getting started)
+FAQ 1 ANSWER: (2–3 sentences — direct, helpful, written as a self-contained GEO-friendly answer)
+FAQ 2 QUESTION: (question about service area or who you work with)
+FAQ 2 ANSWER: (2–3 sentences)
+FAQ 3 QUESTION: (addresses the main hesitation or concern)
+FAQ 3 ANSWER: (2–3 sentences)
+
+SERVICES CTA HEADLINE:
+SERVICES CTA BODY: (1–2 sentences)
+SERVICES CTA BUTTON:
+
+SEO PAGE TITLE: (50–60 chars — top 1–2 services + location)
+META DESCRIPTION: (140–155 chars)
+TARGET KEYWORDS: (service-specific, location-specific)`,
+
+    contact:`Write the complete CONTACT page for ${c.biz}. Use these EXACT section labels:
+
+PAGE HEADLINE: (ALL CAPS — warmer and more human than "Contact Us")
+PAGE SUBHEADLINE: (1 sentence — reassuring, removes friction, sets expectation)
+OPENING PARAGRAPH: (2–3 sentences. Give them a reason to reach out NOW. Address hesitation. Reference what makes it easy.)
+
+PHONE LABEL TEXT: (short friendly label before the phone number — 3–5 words)
+EMAIL LABEL TEXT: (short friendly label before the email — 3–5 words)
+ADDRESS LABEL TEXT: (short label before the address — 2–4 words)
+HOURS LABEL TEXT: (short label before the hours — 2–4 words)
+
+WHAT TO EXPECT HEADLINE:
+WHAT TO EXPECT BODY: (2–3 sentences walking them through contacting: ${c.process||'reach out, we respond quickly, we help you move forward'}.)
+
+FORM HEADLINE: (friendlier than "Send a Message")
+FORM SUBTEXT: (1 sentence — sets response time expectation)
+FORM SUBMIT BUTTON: (2–4 words)
+
+CONTACT CLOSING STATEMENT: (1 warm sentence — final reassurance)
+
+SEO PAGE TITLE: (50–60 chars — business name + city + contact)
+META DESCRIPTION: (140–155 chars — includes phone or location)
+TARGET KEYWORDS:
+NAP BLOCK: (Formatted for schema markup — Business Name, full address, phone, email, hours exactly as they should appear everywhere online)`
+  };
+  return ps[page];
+}
+
+// ════════════════════════════════
+// API CALL (streaming)
+// Calls our own /api/claude backend — the API key lives there, not here
+// ════════════════════════════════
+async function callClaude(sys, user, onChunk) {
+  const resp = await fetch('/api/claude', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({
+      model:'claude-sonnet-4-20250514', max_tokens:2000, stream:true,
+      system:sys, messages:[{role:'user',content:user}]
+    })
+  });
+  if (!resp.ok) { const e=await resp.json().catch(()=>{}); throw new Error(e?.error?.message||'HTTP '+resp.status); }
+  const reader=resp.body.getReader(), dec=new TextDecoder();
+  let buf='';
+  while(true){
+    const{done,value}=await reader.read(); if(done) break;
+    buf+=dec.decode(value,{stream:true});
+    const lines=buf.split('\n'); buf=lines.pop();
+    for(const line of lines){
+      if(!line.startsWith('data: ')) continue;
+      const d=line.slice(6).trim(); if(d==='[DONE]') continue;
+      try{ const e=JSON.parse(d); if(e.type==='content_block_delta'&&e.delta?.text) onChunk(e.delta.text); }catch{}
+    }
+  }
+}
+
+// ════════════════════════════════
+// STORYBRAND EDITOR PASS
+// Also calls our /api/claude backend (no streaming needed here)
+// ════════════════════════════════
+async function callClaudeJSON(sys, user) {
+  const resp = await fetch('/api/claude', {
+    method:'POST',
+    headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({
+      model:'claude-sonnet-4-20250514', max_tokens:3000,
+      system: sys,
+      messages:[{role:'user',content:user}]
+    })
+  });
+  if (!resp.ok) { const e=await resp.json().catch(()=>{}); throw new Error(e?.error?.message||'HTTP '+resp.status); }
+  const data = await resp.json();
+  const text = data.content.filter(b=>b.type==='text').map(b=>b.text).join('');
+  const match = text.match(/\{[\s\S]*\}/);
+  if (!match) throw new Error('Editor pass returned no JSON');
+  return JSON.parse(match[0]);
+}
+
+function editorSystemPrompt() {
+  return `You are a senior StoryBrand certified copywriter with 10+ years experience. You have deep expertise in Donald Miller's Building a StoryBrand framework. Your job is to score and critique website copy sections against strict StoryBrand principles, then rewrite any weak sections.
+
+STORYBRAND SCORING CRITERIA:
+- Hero/headline: Customer is the hero? Does NOT start with business name? Speaks directly to what the customer wants? Clear and specific (not vague)?
+- Problem section: Names external problem first, then internal emotional frustration, then philosophical? Makes customer feel seen and understood?
+- Guide section: Leads with EMPATHY before authority? Positions business as guide not hero? Reassures without bragging?
+- Plan/steps: Simple (3 steps max)? Each step is customer-action-focused? Removes hesitation?
+- CTA: Direct and specific? Creates urgency or clarity? Not generic ("click here", "learn more")?
+- Success section: Describes identity transformation not just task completion? Specific and vivid? Customer can picture themselves there?
+- About page: Opens with customer's world or shared belief, NOT "we were founded"? Story feels human? Mission is clear and outward-facing?
+- Services: Framed as solutions to customer problems? Each service answers "what's in it for me"? No feature-dumping?
+- Contact: Removes friction? Sets clear expectations? Gives a reason to act now?
+
+SCORE GUIDE:
+9-10: Publish-ready. Exemplary StoryBrand execution.
+7-8: Good. Minor polish needed but structurally sound.
+5-6: Acceptable but misses key SB principles. Rewrite recommended.
+1-4: Weak. Violates core SB rules. Must rewrite.
+
+Rewrite any section scoring 6 or below. Rewrites must be strictly better — more specific, more customer-focused, stronger emotional resonance.`;
+}
+
+function editorUserPrompt(page, blocks, c) {
+  const blockList = blocks.map((b,i) => `SECTION ${i+1} — ${b.label}:\n${b.content}`).join('\n\n---\n\n');
+
+  return `Score and critique each section of this ${page.toUpperCase()} page copy for ${c.biz} (${c.ind||'business'} in ${c.city}, ${c.state}).
+
+Customer: ${c.who}. What they want: ${c.want}. Brand tone: ${c.tone}.
+
+${blockList}
+
+Return ONLY valid JSON in this exact structure. No text before or after:
+{
+  "pageScore": <number 1-10, average of all sections>,
+  "pageSummary": "<2 sentences: overall assessment and biggest strength/weakness>",
+  "sections": [
+    {
+      "label": "<exact section label from above>",
+      "score": <number 1-10>,
+      "critique": "<1-2 sentences: specific SB critique — what works and what doesn't. Name the specific StoryBrand rule being violated if score is below 7>",
+      "rewritten": "<full rewritten copy if score is 6 or below, otherwise null>"
+    }
+  ]
+}`;
+}
+
+// ════════════════════════════════
+// RENDER OUTPUT (with SB scores)
+// ════════════════════════════════
+function renderPage(raw, page, c, editorData) {
+  const lines = raw.split('\n');
+  const blocks = [];
+  let lbl=null, content=[];
+  for(const line of lines){
+    const m = line.match(/^([A-Z][A-Z0-9 \/#&–\-]{2,}):\s*(.*)/);
+    if(m){ if(lbl) blocks.push({label:lbl,content:content.join('\n').trim()}); lbl=m[1].trim(); content=m[2]?[m[2]]:[];}
+    else if(lbl) content.push(line);
+  }
+  if(lbl) blocks.push({label:lbl,content:content.join('\n').trim()});
+
+  const seoKeys=['SEO PAGE TITLE','META DESCRIPTION','TARGET KEYWORDS','NAP BLOCK'];
+  const seoBlks=blocks.filter(b=>seoKeys.some(k=>b.label.includes(k.replace('SEO ',''))));
+  const copyBlks=blocks.filter(b=>!seoKeys.some(k=>b.label.includes(k.replace('SEO ',''))));
+
+  let html='';
+
+  // Page score summary bar (if editor data available)
+  if (editorData) {
+    const ps = editorData.pageScore || 0;
+    const cls = ps >= 8 ? 'great' : ps >= 6 ? 'good' : 'weak';
+    const pct = (ps/10)*100;
+    html += `<div class="page-score-summary">
+      <div>
+        <div class="pss-label">StoryBrand Score</div>
+        <div class="pss-score ${cls}">${ps.toFixed(1)}<span style="font-size:14px;font-weight:400;color:var(--slate)">/10</span></div>
+      </div>
+      <div class="pss-bar"><div class="pss-fill ${cls}" style="width:${pct}%"></div></div>
+      <div class="pss-summary">${esc(editorData.pageSummary||'')}</div>
+    </div>`;
+  }
+
+  // SEO block
+  if(seoBlks.length){
+    const get=k=>seoBlks.find(b=>b.label.includes(k));
+    const ti=get('TITLE'), me=get('META'), kw=get('KEYWORD'), na=get('NAP');
+    const metaRaw=seoBlks.map(b=>b.label+': '+b.content).join('\n');
+    html+=`<div class="seo-blk"><div class="seo-blk-hd"><div class="seo-lbl">SEO &amp; GEO Metadata</div><button class="cp-btn cp-dk" onclick="cpText(this,\`${escQ(metaRaw)}\`)">⎘ Copy Meta</button></div>`;
+    if(ti){const n=ti.content.length,cl=charCls(n,60);html+=`<div class="seo-row"><div class="seo-name">Page Title <span class="cc ${cl}">${n} chars</span></div><div class="seo-val title">${esc(ti.content)}</div></div>`;}
+    if(me){const n=me.content.length,cl=charCls(n,155,140);html+=`<div class="seo-row"><div class="seo-name">Meta Description <span class="cc ${cl}">${n} chars</span></div><div class="seo-val">${esc(me.content)}</div></div>`;}
+    if(kw)html+=`<div class="seo-row"><div class="seo-name">Target Keywords</div><div class="seo-val" style="font-size:13px;color:rgba(233,232,229,.65)">${esc(kw.content)}</div></div>`;
+    if(na)html+=`<div class="seo-row"><div class="seo-name">NAP Block</div><div class="seo-val" style="white-space:pre-wrap;font-size:13px">${esc(na.content)}</div></div>`;
+    html+=`</div>`;
+  }
+
+  // GEO notes
+  const geo={
+    home:`Ensure <strong>${c.city}, ${c.state}</strong> appears in the hero, problem, and closing CTA. Add <strong>LocalBusiness schema</strong> with address, phone, and hours. The hero subheadline should directly answer <em>"best ${c.ind||'business'} in ${c.city}"</em> for AI Overviews.`,
+    about:`Include <strong>${c.city}</strong> at least twice. Year founded signals authority to AI systems. The opening paragraph should stand alone as a cited answer to <em>"who is ${c.biz}?"</em> Add <strong>Organization schema</strong>.`,
+    services:`Each service description should function as a standalone answer to <em>"${c.city} ${c.ind||'business'} [service]"</em>. Add <strong>FAQ schema</strong> to the FAQ section — the single highest-ROI GEO move for service pages. Consider individual sub-pages per service.`,
+    contact:`NAP must be identical across website, Google Business Profile, and all directories. Add <strong>LocalBusiness schema</strong> with geo coordinates. Embed a Google Map. This page directly feeds AI "near me" query responses.`
+  };
+  html+=`<div class="geo-blk"><div class="geo-lbl">GEO / Local AI Optimization Notes</div><p>${geo[page]}</p></div>`;
+
+  // Copy blocks — with scores if available
+  for(const block of copyBlks){
+    if(!block.content) continue;
+
+    // Find matching editor section
+    const edSection = editorData?.sections?.find(s =>
+      s.label.toUpperCase().replace(/\s+/g,' ').trim() === block.label.toUpperCase().replace(/\s+/g,' ').trim()
+    );
+
+    const score = edSection?.score;
+    const critique = edSection?.critique;
+    const rewritten = edSection?.rewritten;
+    const hasRewrite = rewritten && rewritten !== 'null' && rewritten.length > 10;
+
+    // Score badge
+    let scoreBadge = '';
+    if (score != null) {
+      const scls = score >= 8 ? 'great' : score >= 7 ? 'good' : 'weak';
+      const slbl = score >= 8 ? '✓ Strong' : score >= 7 ? '~ Good' : '↑ Revised';
+      scoreBadge = `<span class="sb-score ${scls}">${slbl} ${score}/10</span>`;
+    }
+
+    // Final copy to show (rewritten if available, else original)
+    const displayCopy = hasRewrite ? rewritten : block.content;
+    const copyForButton = displayCopy;
+
+    html += `<div class="cb">
+      <div class="cb-head">
+        <div class="cb-lbl"><div class="cb-dot"></div>${esc(block.label)} ${scoreBadge}</div>
+        <button class="cp-btn" onclick="cpText(this,\`${escQ(copyForButton)}\`)">⎘ Copy</button>
+      </div>
+      <div class="cb-body">`;
+
+    // If rewritten: show revised badge + original collapsed
+    if (hasRewrite) {
+      html += `<div class="sb-revised-badge">✦ Revised by StoryBrand Editor</div>
+        <div>${esc(rewritten)}</div>
+        <details style="margin-top:14px">
+          <summary style="font-size:12px;color:var(--slate);cursor:pointer;user-select:none;font-weight:600;letter-spacing:.06em;text-transform:uppercase">Show original draft</summary>
+          <div class="sb-original" style="margin-top:8px"><div class="sb-original-lbl">Original draft</div>${esc(block.content)}</div>
+        </details>`;
+    } else {
+      html += esc(block.content);
+    }
+
+    html += `</div>`;
+
+    // Critique note below block
+    if (critique) {
+      html += `<div style="padding:8px 20px 12px;border-top:1px solid var(--pebble)"><p class="sb-critique">💬 ${esc(critique)}</p></div>`;
+    }
+
+    html += `</div>`;
+  }
+
+  // UpFrame review note
+  const notes={
+    home:'Check: does the hero headline immediately tell a stranger what this business does and who it serves? The problem section should lead with the customer\'s frustration — not the business. Apply final voice edits before client delivery.',
+    about:'Should feel human and story-driven, not like a résumé. Recommend adding team photos or behind-the-scenes imagery near "Our Story." Confirm the year founded is accurate.',
+    services:'Consider building individual sub-pages for each service for stronger local SEO. Each sub-page = its own title tag, meta, and 300+ words targeting a specific keyword.',
+    contact:'Verify NAP matches Google Business Profile exactly. Add an embedded Google Map iframe. Recommend a contact form with name, email, phone, and message fields.'
+  };
+  html+=`<div class="note-blk"><strong>UpFrame Review Note:</strong> ${notes[page]}</div>`;
+  return html;
+}
+
+// ════════════════════════════════
+// SHARED BLOCK PARSER
+// ════════════════════════════════
+function parseBlocks(raw) {
+  const lines = raw.split('\n');
+  const blocks = [];
+  let lbl=null, content=[];
+  for(const line of lines){
+    const m = line.match(/^([A-Z][A-Z0-9 \/#&–\-]{2,}):\s*(.*)/);
+    if(m){ if(lbl) blocks.push({label:lbl,content:content.join('\n').trim()}); lbl=m[1].trim(); content=m[2]?[m[2]]:[];}
+    else if(lbl) content.push(line);
+  }
+  if(lbl) blocks.push({label:lbl,content:content.join('\n').trim()});
+  return blocks;
+}
+
+// ════════════════════════════════
+// GENERATE (selected pages only)
+// ════════════════════════════════
+async function startGeneration() {
+  const selectedPages = getSelectedPages();
+  if (selectedPages.length === 0) {
+    alert('Please select at least one page to generate.');
+    return;
+  }
+
+  const c = buildCtx();
+  if (!c.biz || c.biz === 'the business') { alert('Please fill in the business name before generating.'); showPage(1); return; }
+  window._ctx = c;
+  window._raws = window._raws || {};
+
+  document.getElementById('out-biz-name').textContent = c.biz;
+  document.getElementById('out-biz-bar').textContent = c.biz;
+  document.getElementById('api-err').style.display = 'none';
+
+  const allPages = ['home','about','services','contact'];
+  const sys = sysPrompt(c);
+
+  // Seed panels
+  allPages.forEach(pg => {
+    document.getElementById('tp-'+pg).innerHTML = selectedPages.includes(pg)
+      ? `<div class="cb"><div class="cb-head"><div class="cb-lbl"><div class="cb-dot"></div>Queued — writing soon...</div></div><div class="cb-body streaming" id="stream-${pg}" style="min-height:100px;color:var(--slate);font-size:14px;"></div></div>`
+      : renderEmpty(pg);
+  });
+
+  const firstIdx = allPages.indexOf(selectedPages[0]);
+  document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('on', i === firstIdx));
+  document.querySelectorAll('.tab-panel').forEach((p,i) => p.classList.toggle('on', i === firstIdx));
+  _currentTab = selectedPages[0];
+
+  showPage(9);
+  document.getElementById('gen-ov').classList.add('show');
+
+  let hadError = false;
+
+  for (let i = 0; i < selectedPages.length; i++) {
+    const pg = selectedPages[i];
+    const pgIdx = allPages.indexOf(pg);
+
+    allPages.forEach((p) => {
+      const isDone = selectedPages.slice(0,i).includes(p);
+      const isCur = p === pg;
+      document.getElementById('gp-'+p).className = 'gp' + (isDone?' done': isCur?' cur':'');
+    });
+
+    document.querySelectorAll('.tab-btn').forEach((b,j) => b.classList.toggle('on', j === pgIdx));
+    document.querySelectorAll('.tab-panel').forEach((p,j) => p.classList.toggle('on', j === pgIdx));
+    _currentTab = pg;
+
+    // Pass 1: write
+    document.getElementById('gen-title').textContent = `Pass 1 — Writing ${pg.charAt(0).toUpperCase()+pg.slice(1)} (${i+1}/${selectedPages.length})`;
+    document.getElementById('gen-sub').textContent = 'Applying StoryBrand framework...';
+
+    let raw = '';
+    try {
+      await callClaude(sys, pagePrompt(pg, c), chunk => {
+        raw += chunk;
+        const s = document.getElementById('stream-' + pg);
+        if (s) s.textContent = raw.slice(-500);
+      });
+      window._raws[pg] = raw;
+
+      // Pass 2: editor
+      document.getElementById('gen-title').textContent = `Pass 2 — StoryBrand Editor Review`;
+      document.getElementById('gen-sub').textContent = `Scoring & rewriting ${pg} sections...`;
+      const s = document.getElementById('stream-' + pg);
+      if (s) s.textContent = 'Running StoryBrand editor pass...';
+
+      const copyBlocks = parseBlocks(raw).filter(b =>
+        !['SEO PAGE TITLE','META DESCRIPTION','TARGET KEYWORDS','NAP BLOCK'].some(k=>b.label.includes(k.replace('SEO ','')))
+      );
+
+      let editorData = null;
+      try {
+        editorData = await callClaudeJSON(editorSystemPrompt(), editorUserPrompt(pg, copyBlocks, c));
+      } catch(edErr) {
+        console.warn('Editor pass failed (non-fatal):', edErr.message);
+      }
+
+      document.getElementById('gp-'+pg).className = 'gp done';
+      document.getElementById('tp-'+pg).innerHTML = renderPage(raw, pg, c, editorData);
+
+    } catch(e) {
+      hadError = true;
+      document.getElementById('tp-'+pg).innerHTML =
+        `<div class="cb"><div class="cb-head"><div class="cb-lbl"><div class="cb-dot"></div>Generation failed</div></div><div class="cb-body" style="color:#7f1d1d">Error: ${esc(e.message)}<br><br><small>Rate limited? Wait a few hours then use "⟳ Write This Page" to retry.</small></div></div>`;
+    }
+  }
+
+  document.getElementById('gen-ov').classList.remove('show');
+  if (hadError) {
+    document.getElementById('api-err').style.display = 'block';
+    document.getElementById('api-err-msg').textContent = 'One or more pages failed. Use "⟳ Write This Page" on each failed tab to retry individually.';
+  }
+
+  document.querySelectorAll('.tab-btn').forEach((b,i) => b.classList.toggle('on', i === firstIdx));
+  document.querySelectorAll('.tab-panel').forEach((p,i) => p.classList.toggle('on', i === firstIdx));
+  window.scrollTo({ top: 0, behavior: 'smooth' });
+}
+
+// ════════════════════════════════
+// EDIT & REGENERATE (keeps all data)
+// ════════════════════════════════
+function editAndRerun() {
+  showPage(1); // Go back to step 1, all field values are still intact
+}
+
+// ════════════════════════════════
+// START OVER (clears everything)
+// ════════════════════════════════
+function startOver() {
+  if(!confirm('Start over? This will clear all answers and generated copy.')) return;
+  document.querySelectorAll('input,textarea').forEach(el=>el.value='');
+  document.querySelectorAll('.chip').forEach(c=>c.classList.remove('on'));
+  document.querySelectorAll('.fstatus').forEach(el=>{el.style.display='none';el.className='fstatus';});
+  document.querySelectorAll('.fi,.ft').forEach(el=>el.classList.remove('err','needs-review'));
+  document.querySelectorAll('.field-err').forEach(el=>el.classList.remove('show'));
+  document.querySelectorAll('.step-err-banner').forEach(el=>el.classList.remove('show'));
+  document.getElementById('scan-prog').classList.remove('show');
+  document.getElementById('scan-banner').classList.remove('show');
+  window._raws={};
+  showPage(0);
+}
+
+// ════════════════════════════════
+// COPY ALL
+// ════════════════════════════════
+function copyAll() {
+  const raws=window._raws||{};
+  const parts=['home','about','services','contact'].map(p=>
+    `${'═'.repeat(60)}\n${p.toUpperCase()} PAGE\n${'═'.repeat(60)}\n\n${raws[p]||'Not generated'}`
+  );
+  navigator.clipboard.writeText(parts.join('\n\n')).then(()=>{
+    const btn=event.target; btn.textContent='✓ Copied'; setTimeout(()=>btn.textContent='⎘ Copy All',2200);
+  });
+}
+
+// ════════════════════════════════
+// GOOGLE DOC EXPORT
+// ════════════════════════════════
+function exportGoogleDoc() {
+  const raws=window._raws||{};
+  const c=window._ctx||{};
+  const biz=c.biz||'Business';
+
+  const pages=['home','about','services','contact'];
+  let docText=`WEBSITE COPY — ${biz.toUpperCase()}\nGenerated by UpFrame Creative Website Copy Generator\n\n`;
+
+  pages.forEach(pg=>{
+    docText+=`${'═'.repeat(70)}\n${pg.toUpperCase()} PAGE\n${'═'.repeat(70)}\n\n`;
+    const raw=raws[pg]||'Not generated';
+    docText+=raw+'\n\n';
+  });
+
+  // Use Google Docs "create from text" URL trick via data URI + open
+  // We'll create a .txt and prompt download, then open Google Docs import note
+  const blob = new Blob([docText], {type:'text/plain'});
+  const dlUrl = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = dlUrl;
+  a.download = `${biz.replace(/\s+/g,'-')}-website-copy.txt`;
+  a.click();
+  URL.revokeObjectURL(dlUrl);
+
+  // Open Google Docs with a short delay so download starts first
+  setTimeout(()=>{
+    const confirmed = confirm(
+      'Your copy has been downloaded as a .txt file.\n\nTo import into Google Docs:\n1. Open docs.google.com\n2. File → Open → Upload → select the downloaded file\n\nOpen Google Docs now?'
+    );
+    if(confirmed) window.open('https://docs.google.com/document/create','_blank');
+  }, 600);
+}
+</script>
+</body>
+</html>
