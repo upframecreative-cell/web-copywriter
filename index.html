@@ -306,10 +306,10 @@ body{font-family:'Nunito Sans',sans-serif;background:var(--latte);color:var(--ch
 
     <div class="scan-prog" id="scan-prog">
       <div class="scan-steps">
-        <div class="ss" id="ss1"><div class="ss-icon" id="ss1i">1</div>Fetching website content...</div>
-        <div class="ss" id="ss2"><div class="ss-icon" id="ss2i">2</div>Reading pages — home, about, services...</div>
-        <div class="ss" id="ss3"><div class="ss-icon" id="ss3i">3</div>Extracting business information...</div>
-        <div class="ss" id="ss4"><div class="ss-icon" id="ss4i">4</div>Mapping to StoryBrand framework...</div>
+        <div class="ss" id="ss1"><div class="ss-icon" id="ss1i">1</div>Connecting to website...</div>
+        <div class="ss" id="ss2"><div class="ss-icon" id="ss2i">2</div>Reading pages — home, about, services, contact...</div>
+        <div class="ss" id="ss3"><div class="ss-icon" id="ss3i">3</div>Extracting text content...</div>
+        <div class="ss" id="ss4"><div class="ss-icon" id="ss4i">4</div>Analyzing with Claude AI...</div>
         <div class="ss" id="ss5"><div class="ss-icon" id="ss5i">5</div>Pre-filling questionnaire...</div>
       </div>
     </div>
@@ -997,11 +997,17 @@ async function startScan() {
   setSS(1,'cur');
 
   try {
-    await delay(400); setSS(1,'done'); setSS(2,'cur');
-    await delay(300); setSS(2,'done'); setSS(3,'cur');
-    await delay(300); setSS(3,'done'); setSS(4,'cur');
+    // Steps 1-3 animate while the fetch is happening
+    await delay(300); setSS(1,'done'); setSS(2,'cur');
+    await delay(400); setSS(2,'done'); setSS(3,'cur');
 
-    const result = await scanWithClaude(url);
+    // This single call does all the real work: fetches the site + analyzes with Claude
+    const scanPromise = scanWithClaude(url);
+
+    // Animate steps 3 & 4 while we wait
+    await delay(1500); setSS(3,'done'); setSS(4,'cur');
+
+    const result = await scanPromise;
 
     setSS(4,'done'); setSS(5,'cur');
     await delay(300);
@@ -1019,24 +1025,21 @@ async function startScan() {
 }
 
 async function scanWithClaude(url) {
-  const resp = await fetch('https://api.anthropic.com/v1/messages', {
-    method:'POST',
-    headers:{'Content-Type':'application/json'},
-    body: JSON.stringify({
-      model:'claude-sonnet-4-20250514',
-      max_tokens:2000,
-      tools:[{type:'web_search_20250305',name:'web_search'}],
-      messages:[{role:'user',content:`Analyze the website at ${url}. Use web search to read its homepage, about, services, and contact pages. Return ONLY valid JSON with these keys (null if not found). No text before or after the JSON.
-
-{"biz":null,"ind":null,"liner":null,"city":null,"state":null,"area":null,"phone":null,"email":null,"addr":null,"czip":null,"hours":null,"social":null,"kws":null,"who":null,"want":null,"ext":null,"int":null,"empathy":null,"auth":null,"diff":null,"story":null,"process":null,"success":null,"testim":null,"sv1n":null,"sv1d":null,"sv2n":null,"sv2d":null,"sv3n":null,"sv3d":null,"sv4n":null,"sv4d":null,"sv5n":null,"sv5d":null,"pricing":null,"turn":null,"tone":null,"cta1":null,"cta2":null,"whycon":null}`}]
-    })
+  // Calls our /api/scan backend which fetches the site server-side
+  // then analyzes it with Claude — no web_search tool needed
+  const resp = await fetch('/api/scan', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ url })
   });
-  if (!resp.ok) { const e=await resp.json().catch(()=>{}); throw new Error(e?.error?.message||'API error '+resp.status); }
+
   const data = await resp.json();
-  let raw = data.content.filter(b=>b.type==='text').map(b=>b.text).join('');
-  const m = raw.match(/\{[\s\S]*\}/);
-  if (!m) throw new Error('Could not parse scan results');
-  return JSON.parse(m[0]);
+
+  if (!resp.ok || data.error) {
+    throw new Error(data.error || 'Scan failed');
+  }
+
+  return data.data;
 }
 
 function prefill(d, scannedUrl) {
